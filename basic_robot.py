@@ -22,8 +22,10 @@
 
 from gopigo import *    #Has the basic functions for controlling the GoPiGo Robot
 import sys      #Used for closing the running program
+
 print "This is a basic example for the GoPiGo Robot control"
 print "Press:\n\tw: Move GoPiGo Robot forward\n\ta: Turn GoPiGo Robot left\n\td: Turn GoPiGo Robot right\n\ts: Move GoPiGo Robot backward\n\tt: Increase speed\n\tg: Decrease speed\n\tx: Stop GoPiGo Robot\n\tz: Exit\n"
+
 while True:
         print "Enter the Command:",
         a=raw_input()   # Fetch the input from the terminal
@@ -33,7 +35,7 @@ while True:
                 left()  # Turn left
         elif a=='o':
                 
-                for i in range(0,4):
+            for i in range(0,4):
                         fwd()
                         time.sleep(2)
                         stop()
@@ -41,12 +43,27 @@ while True:
                         left()  # Turn left
                         time.sleep(0.5)
                         stop()
-			time.sleep(0.1)	
+                        time.sleep(0.1) 
                         
-                stop()
+            stop()
+        elif a=='O':
+                
+            for i in range(0,4):
+                        fwd()
+                        time.sleep(0.1)
+                        set_right_speed(128)
+                        time.sleep(0.1)
+                        set_left_speed(128)
+                        time.sleep(2)
+                        set_left_speed(64)  # Turn left
+                        time.sleep(2)
+            set_speed(0)
+            
         elif a=='8':
-                motor1(1, 100)
-                motor2(1, 50)
+                
+                fwd()
+                time.sleep(2)
+                
                 time.sleep(2)
                 motor1(1, 50)
                 motor2(1, 100)
@@ -64,6 +81,8 @@ while True:
                 increase_speed()        # Increase speed
         elif a=='g':
                 decrease_speed()        # Decrease speed
+        elif a=='v':
+                print volt()
         elif a=='z':
                 print "Exiting"         # Exit
                 stop()
