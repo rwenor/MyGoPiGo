@@ -3,7 +3,10 @@ import sys
 import time
 import os
 import threading
+import logging
 
+logging.basicConfig(level=logging.DEBUG, \
+                    format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
 
 def PTD(str):
     global PrintTimeDiffLast
@@ -40,9 +43,11 @@ def sm_getCpuTemp(fra, til, data):
 
     return data
 
+sms_data = []
 
 def Disp_sm(fra, til, data):
 
+    sms_data.append(data)
     if til == 'Til.Add':
         data = sm_add(fra, til, data)
     elif til == 'Til.CpuTemp':
@@ -110,14 +115,35 @@ def Run_sms_srv():
         Init_srv()
         Recv_sms()
 
+
+def Run_test():
+    i = 0
+    while True:
+        i += 1
+        logging.debug( str(i) + ': ' + str(sms_data) )
+        time.sleep(1)
+        if i == 10:
+            sms_data.append('Fire')
+
+
+def Chk_Fire():
+    global sms_data
+
+    if sms_data:
+        sms_data = []
+        return True
+    else:
+        return False
+    
+
+
 threads = []
 
 t = threading.Thread(target=Run_sms_srv)
 threads.append(t)
 t.start()
 
-i = 0
-while True:
-    i += 1
-    print i
-    time.sleep(1) 
+t = threading.Thread(target=Run_test)
+threads.append(t)
+t.start()
+

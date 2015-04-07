@@ -33,6 +33,9 @@ import base64
 import usb.core
 import usb.util
 
+import sms_srv_lib
+
+
 #Enable for Model B+ and disable for Model B
 model_b_plus=True	# For the model B+ we need to turn this variable on to run the Office Cannon.
 					# This can be left on for the Model B and not cause problems.
@@ -150,6 +153,8 @@ flag=0
 #Control the office cannon
 def control():
 	global flag
+	#global sms_srv_lib.sms_data
+	
 	[bLeft,bMiddle,bRight,x,y]=getMouseEvent()  #Get the inputs from the mouse
 
 	#GoPiGo control
@@ -172,6 +177,11 @@ def control():
 	if bMiddle > 0:
 		print "fire rockets"
 		run_command("fire", tdelay)
+		
+	if sms_srv_lib.Chk_Fire():
+		print "fire rockets SMS!" 
+		run_command("fire", tdelay)
+                sms_srv_lib.sms_data = []
 
 	#Move the mouse left to move the cannon left
 	#Move the mouse right to move the cannon right
