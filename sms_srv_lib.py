@@ -60,10 +60,11 @@ def Disp_sm(fra, til, data):
 #Globals
 connection = None
 client_address = ''
+sock = None
+halt = False
 
 def Init_srv():
-    global connection
-    global client_address
+    global sock
     
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,17 +78,22 @@ def Init_srv():
     # Listen for incoming connections
     sock.listen(1)
 
+
+    
+def Recv_sms():
+    global connection
+    global client_address
+    global sock
+    
     # Wait for a connection
     print >>sys.stderr, 'waiting for a connection'
     connection, client_address = sock.accept()
 
-    
-def Recv_sms():
     try:
         print >>sys.stderr, 'connection from', client_address
 
         # Receive the data in small chunks and retransmit it
-        while True:
+        while not halt:
             data = connection.recv(200)
             print >>sys.stderr, 'received "%s"' % data
             if data:
@@ -111,19 +117,23 @@ def Recv_sms():
 
 
 def Run_sms_srv():
-    while True:
-        Init_srv()
-        Recv_sms()
+    Init_srv()
+    Recv_sms()
 
 
 def Run_test():
+    global halt
+    
     i = 0
-    while True:
+    while not halt:
         i += 1
         logging.debug( str(i) + ': ' + str(sms_data) )
         time.sleep(1)
         if i == 10:
             sms_data.append('Fire')
+        elif i == 100:
+            halt = True
+            sock.close()
 
 
 def Chk_Fire():
